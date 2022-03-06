@@ -112,7 +112,8 @@ def attendance_check(set_time='08:00:00'):
     att_state = '正常'
     
     # 格式化考勤时间
-    att_time = datetime.strptime(f'{now_y}-{now_m}-{now_d} {set_time}', '%Y-%m-%d %H:%M:%S')
+    # att_time = datetime.strptime(f'{now_y}-{now_m}-{now_d} {set_time}', '%Y-%m-%d %H:%M:%S')
+    att_time = datetime.strptime(f'{set_time}', '%Y-%m-%d %H:%M:%S')
     # 计算当前时间与设定时间的差值
     time_diff = now - att_time
     # print(time_diff)

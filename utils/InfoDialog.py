@@ -3,7 +3,7 @@ from PyQt5.QtGui import QImage, QIcon, QPixmap
 from PyQt5.QtCore import QCoreApplication, QThread
 from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox, QInputDialog
 # 导入信息采集框界面
-from ui import InfoUI
+from ui import infoUI as InfoUI
 
 import threading
 import cv2
@@ -148,6 +148,29 @@ class InfoDialog(QWidget):
 
         # 因为最后一张画面会显示在GUI中，此处实现清除。
         self.Dialog.label_capture.clear()
+
+        # 信息入库
+        try:
+            db, cursor = connect_to_sql()
+        except ConnectionError as e:
+            print("[Error] 数据库连接失败！")
+
+        try:
+            _sql = "INSERT INTO students(ID, Name, Class, Sex, Birthday) VALUES ('{}', '{}', '{}', '{}', '{}')"
+            _id = self.Dialog.lineEdit_id.text()
+            _name = self.Dialog.lineEdit_name.text()
+            _class = self.Dialog.lineEdit_class.text()
+            _gender = self.Dialog.lineEdit_sex.text()
+            _bthd = self.Dialog.lineEdit_birth.text()
+            cursor.execute(_sql.format(_id, _name, _class, _gender, _bthd))
+        except ConnectionAbortedError as e:
+            self.ui.textBrowser_log.append("[INFO] SQL execute failed!")
+        else:
+            QMessageBox.information(self, "Tips", "信息已入库")
+        finally:
+            db.commit()
+            cursor.close()
+            db.close()
 
     def save_image(self, method='qt5'):
         self.filename = '{}/face_dataset/{}/'.format(rootdir, self.dialog_text_id)

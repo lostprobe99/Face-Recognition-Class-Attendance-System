@@ -5,7 +5,8 @@ import pymysql
 
 # 全局变量
 # 摄像头ID
-CAMERA_ID = 1
+# CAMERA_ID = 1
+CAMERA_ID = 0
 # 默认采集人脸数量
 COLLENCT_FACE_NUM_DEFAULT = 100
 
@@ -22,7 +23,8 @@ FR_LOOP_NUM = 20
 
 # 将execute文件所在目录添加到根目录
 def add_path_to_sys():
-    rootdir = "D:/Github/Face-Recognition-Class-Attendance-System/"
+    # rootdir = "D:/Github/Face-Recognition-Class-Attendance-System/"
+    rootdir = "."
     # rootdir = os.getcwd()
     sys.path.append(rootdir)
 
@@ -30,7 +32,7 @@ def add_path_to_sys():
 
 # 连接数据库操作
 def connect_to_sql():
-    db = pymysql.connect(host="localhost", user="root", password="mysql105", database="facerecognition")
+    db = pymysql.connect(host="localhost", user="root", password="@lostprobe", database="facerecognition")
     # 使用cursor()方法获取操作游标
     cursor = db.cursor()
 
@@ -39,7 +41,8 @@ def connect_to_sql():
 # 遍历人脸数据文件夹，并统计各人脸的图片数量
 def statical_facedata_nums():
     # 人脸数据文件夹根目录
-    files_dir = "D:/Github/Face-Recognition-Class-Attendance-System/face_dataset/"
+    # files_dir = "D:/Github/Face-Recognition-Class-Attendance-System/face_dataset/"
+    files_dir = "."
     # print(os.listdir(files_dir))
 
     dirs = os.listdir(files_dir)

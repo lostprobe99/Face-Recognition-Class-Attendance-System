@@ -23,10 +23,12 @@ from scipy.spatial import distance as dist
 # 导入UI主界面
 # from ui import MainUI
 # 使用mainwindow类重构
-from ui import MainWindow as MainWindowUI
+from ui import mainwindow as MainWindowUI
+# import ui.mainwindow as MainWindowUI
 
 # 导入打印中文脚本
 from utils import PutChineseText
+# import utils.PutChineseText
 # 导入人脸识别检测包
 from utils import GeneratorModel
 # 导入眨眼检测类
@@ -95,9 +97,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # ###################### 摄像头初始化 ######################
         # 初始化摄像头，默认调用第一个摄像头
-        # self.url = 0
+        self.url = 0
         # 如果要调用摄像头1，则设置为1，适用于：笔记本外接USB摄像头
-        self.url = 1
+        # self.url = 1
         self.cap = cv2.VideoCapture()
         # self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 500)
         # self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 400)
