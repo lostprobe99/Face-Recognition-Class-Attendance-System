@@ -41,9 +41,7 @@ def connect_to_sql():
 # 遍历人脸数据文件夹，并统计各人脸的图片数量
 def statical_facedata_nums():
     # 人脸数据文件夹根目录
-    # files_dir = "D:/Github/Face-Recognition-Class-Attendance-System/face_dataset/"
-    files_dir = "."
-    # print(os.listdir(files_dir))
+    files_dir = "./face_dataset/"
 
     dirs = os.listdir(files_dir)
     # 初始化字典
@@ -51,16 +49,14 @@ def statical_facedata_nums():
 
     for dir in dirs:
         for file in os.listdir(files_dir + dir):
-            # $表示匹配结尾
-            # if re.match(r'.*\.jpg$', file) or re.match(r'.*\.png$', file):
+            # 检测 jpg 或 png 文件
             if file.endswith('.jpg') or file.endswith('.png'):
                 files_num_dict[dir] += 1
 
     return files_num_dict
 
 
-print(os.path.basename(__file__))
-
 if __name__ == '__main__':
+    print(os.path.basename(__file__))
     files = statical_facedata_nums()
     print(files)

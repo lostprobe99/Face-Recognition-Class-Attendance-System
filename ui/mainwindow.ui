@@ -40,33 +40,7 @@
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="bt_random_check">
-    <property name="geometry">
-     <rect>
-      <x>860</x>
-      <y>740</y>
-      <width>211</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>随机点名</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="bt_supplement">
-    <property name="geometry">
-     <rect>
-      <x>970</x>
-      <y>300</y>
-      <width>101</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>漏签补签</string>
-    </property>
-   </widget>
-   <widget class="QTableView" name="tableView_late">
+   <widget class="QTableView" name="tableView_absent">
     <property name="geometry">
      <rect>
       <x>860</x>
@@ -102,16 +76,6 @@
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_supplement">
-    <property name="geometry">
-     <rect>
-      <x>860</x>
-      <y>300</y>
-      <width>101</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QTextBrowser" name="textBrowser_log">
     <property name="geometry">
      <rect>
@@ -120,19 +84,6 @@
       <width>301</width>
       <height>161</height>
      </rect>
-    </property>
-   </widget>
-   <widget class="QProgressBar" name="progressBar">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>833</y>
-      <width>301</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="value">
-     <number>24</number>
     </property>
    </widget>
    <widget class="QPushButton" name="bt_blinks">
@@ -161,56 +112,6 @@
      <string>开始考勤</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox_location_2">
-    <property name="geometry">
-     <rect>
-      <x>180</x>
-      <y>690</y>
-      <width>151</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <item>
-     <property name="text">
-      <string>FaceNet (ResNet-SSD)</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>FaceNet (MTCNN)</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>RetinaFace</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>ArcFace</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>CenterFace</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>DBFace</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>FaceBoxes</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>S3FD</string>
-     </property>
-    </item>
-   </widget>
    <widget class="QPushButton" name="bt_generator">
     <property name="geometry">
      <rect>
@@ -224,7 +125,7 @@
      <string>训练模型</string>
     </property>
    </widget>
-   <widget class="QTableView" name="tableView_escape">
+   <widget class="QTableView" name="tableView_present">
     <property name="geometry">
      <rect>
       <x>860</x>
@@ -232,19 +133,6 @@
       <width>211</width>
       <height>141</height>
      </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="bt_load_model">
-    <property name="geometry">
-     <rect>
-      <x>180</x>
-      <y>720</y>
-      <width>151</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>加载模型</string>
     </property>
    </widget>
    <widget class="QPushButton" name="bt_view">
@@ -329,7 +217,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>迟到</string>
+     <string>已到</string>
     </property>
    </widget>
    <widget class="QLCDNumber" name="lcd_2">
@@ -391,19 +279,6 @@
     </property>
     <property name="text">
      <string/>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="bt_leave">
-    <property name="geometry">
-     <rect>
-      <x>970</x>
-      <y>260</y>
-      <width>101</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>请假登记</string>
     </property>
    </widget>
    <widget class="QPushButton" name="bt_check">
@@ -477,16 +352,6 @@
       <string>2020002</string>
      </property>
     </item>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_leave">
-    <property name="geometry">
-     <rect>
-      <x>860</x>
-      <y>260</y>
-      <width>101</width>
-      <height>31</height>
-     </rect>
-    </property>
    </widget>
    <widget class="QLabel" name="label_listName1">
     <property name="geometry">
@@ -592,7 +457,7 @@
      <x>0</x>
      <y>0</y>
      <width>1086</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

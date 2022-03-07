@@ -67,7 +67,7 @@ class InfoDialog(QWidget):
 
         self.collect_photos = int(self.Dialog.spinBox_set_num.text())
 
-    def handle_click(self):
+    def show_this(self):
         if not self.isVisible():
             self.show()
 
@@ -149,28 +149,29 @@ class InfoDialog(QWidget):
         # 因为最后一张画面会显示在GUI中，此处实现清除。
         self.Dialog.label_capture.clear()
 
-        # 信息入库
-        try:
-            db, cursor = connect_to_sql()
-        except ConnectionError as e:
-            print("[Error] 数据库连接失败！")
+        _id = self.Dialog.lineEdit_id.text()
+        _name = self.Dialog.lineEdit_name.text()
+        _class = self.Dialog.lineEdit_class.text()
+        _gender = self.Dialog.lineEdit_sex.text()
+        _bthd = self.Dialog.lineEdit_birth.text()
+        if all((_id, _name, _class, _gender, _bthd)):
+            # 信息入库
+            try:
+                db, cursor = connect_to_sql()
+            except ConnectionError as e:
+                print("[Error] 数据库连接失败！")
 
-        try:
-            _sql = "INSERT INTO students(ID, Name, Class, Sex, Birthday) VALUES ('{}', '{}', '{}', '{}', '{}')"
-            _id = self.Dialog.lineEdit_id.text()
-            _name = self.Dialog.lineEdit_name.text()
-            _class = self.Dialog.lineEdit_class.text()
-            _gender = self.Dialog.lineEdit_sex.text()
-            _bthd = self.Dialog.lineEdit_birth.text()
-            cursor.execute(_sql.format(_id, _name, _class, _gender, _bthd))
-        except ConnectionAbortedError as e:
-            self.ui.textBrowser_log.append("[INFO] SQL execute failed!")
-        else:
-            QMessageBox.information(self, "Tips", "信息已入库")
-        finally:
-            db.commit()
-            cursor.close()
-            db.close()
+            try:
+                _sql = "INSERT INTO students(ID, Name, Class, Sex, Birthday) VALUES ('{}', '{}', '{}', '{}', '{}')"
+                cursor.execute(_sql.format(_id, _name, _class, _gender, _bthd))
+            except ConnectionAbortedError as e:
+                self.ui.textBrowser_log.append("[INFO] SQL execute failed!")
+            else:
+                QMessageBox.information(self, "Tips", "信息已入库")
+            finally:
+                db.commit()
+                cursor.close()
+                db.close()
 
     def save_image(self, method='qt5'):
         self.filename = '{}/face_dataset/{}/'.format(rootdir, self.dialog_text_id)
@@ -291,7 +292,7 @@ class InfoDialog(QWidget):
             table_view_module.setHorizontalHeaderLabels(['ID', 'Number'])
 
             for row, key in enumerate(keys):
-                print(key, values[row])
+                # print(key, values[row])
                 id = QtGui.QStandardItem(key)
                 num = QtGui.QStandardItem(str(values[row]))
 
