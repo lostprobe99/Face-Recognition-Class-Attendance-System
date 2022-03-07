@@ -135,6 +135,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.spinBox_time_hour.setRange(0, 23)
         self.ui.spinBox_time_minute.setRange(0, 59)
 
+        # 主窗口启动时从数据库中读取班级信息
+        try:
+            db, cursor = connect_to_sql()
+        except ValueError:
+            self.ui.textBrowser_log.append("[ERROR] 数据库连接失败！")
+        else:
+            sql = "SELECT DISTINCT Class from students"
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for i in results:
+                self.ui.comboBox_class.addItem(i[0])
+
+
     # 显示系统时间以及相关文字提示函数
     def show_time_text(self):
         # 设置宽度
