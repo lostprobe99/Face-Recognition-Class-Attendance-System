@@ -173,16 +173,12 @@ class InfoDialog(QWidget):
                 cursor.close()
                 db.close()
 
-    def save_image(self, method='qt5'):
+    def save_image(self):
         self.filename = '{}/face_dataset/{}/'.format(rootdir, self.dialog_text_id)
         self.mk_folder(self.filename)
-        if method == 'qt5':
-            photo_save_path = os.path.join(os.path.dirname(os.path.abspath('__file__')), '{}'.format(self.filename))
-            save_filename = datetime.now().strftime("%Y%m%d%H%M%S") + ".png"
-            self.showImage.save(photo_save_path + save_filename)
-        else:
-            p = os.path.sep.join([output, "{}.png".format(str(total).zfill(5))])
-            cv2.imwrite(p, self.showImage)
+        photo_save_path = os.path.join(os.path.dirname(os.path.abspath('__file__')), '{}'.format(self.filename))
+        save_filename = datetime.now().strftime("%Y%m%d%H%M%S") + ".png"
+        self.showImage.save(photo_save_path + save_filename)
 
         self.Dialog.lcdNumber_collection_nums.display(self.have_token_photos)
 
