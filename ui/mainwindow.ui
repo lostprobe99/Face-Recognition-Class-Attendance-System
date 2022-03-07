@@ -342,16 +342,6 @@
       <height>21</height>
      </rect>
     </property>
-    <item>
-     <property name="text">
-      <string>2020001</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>2020002</string>
-     </property>
-    </item>
    </widget>
    <widget class="QLabel" name="label_listName1">
     <property name="geometry">
