@@ -16,8 +16,6 @@ from PyQt5.QtWidgets import QApplication, QMessageBox
 # 导入UI主界面
 from ui import mainwindow as MainWindowUI
 
-# 导入打印中文脚本
-from utils import PutChineseText
 # 导入人脸识别检测包
 from utils import GeneratorModel
 # 导入信息采集槽函数类
@@ -305,11 +303,6 @@ class MainWindow(QtWidgets.QMainWindow):
                                                 2)
                             face_names.append(name)
 
-                    bt_liveness = self.ui.bt_blinks.text()
-                    if bt_liveness == '停止检测':
-                        ChineseText = PutChineseText.put_chinese_text('./utils/microsoft.ttf')
-                        frame = ChineseText.draw_text(frame, (330, 80), ' 请眨眨眼睛 ', 25, (55, 255, 55))
-
                     # 显示输出框架
                     show_video = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # 这里指的是显示原图
                     # opencv读取图片的样式，不能通过Qlabel进行显示，需要转换为Qimage。
@@ -332,6 +325,9 @@ class MainWindow(QtWidgets.QMainWindow):
                         # self.set_name = set(face_names)
                         self.set_names = tuple(self.set_name)
                         # print(self.set_name, self.set_names)
+                        # 如果当前识别到的人脸已签到
+                        if most_id_in_dict in self.record_name:
+                            continue
 
                         self.record_names()
                         self.face_name_dict = dict(zip(le.classes_, len(le.classes_) * [0]))
@@ -559,13 +555,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.record_name = list(self.record_name)
         self.record_name.sort()
         # 设置填入数据内容
-        for row in range(n_row_present):
-            # 填入学号
-            item = QtGui.QStandardItem('%s' % (self.record_name[row]))
-            model1.setItem(row, 0, item)
-            # 填入姓名
-            item = QtGui.QStandardItem('%s' % (results2[self.record_name[row]]))
-            model1.setItem(row, 1, item)
+        if not n_row_present:
+            for row in range(n_row_present):
+                # 填入学号
+                item = QtGui.QStandardItem('%s' % (self.record_name[row]))
+                model1.setItem(row, 0, item)
+                # 填入姓名
+                item = QtGui.QStandardItem('%s' % (results2[self.record_name[row]]))
+                model1.setItem(row, 1, item)
         # 指定显示的tableView控件，实例化表格视图
         self.ui.tableView_present.setModel(model1)
 

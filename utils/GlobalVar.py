@@ -5,7 +5,6 @@ import pymysql
 
 # 全局变量
 # 摄像头ID
-# CAMERA_ID = 1
 CAMERA_ID = 0
 # 默认采集人脸数量
 COLLENCT_FACE_NUM_DEFAULT = 12
