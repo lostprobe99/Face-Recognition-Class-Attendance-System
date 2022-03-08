@@ -20,8 +20,6 @@ from ui import mainwindow as MainWindowUI
 from utils import PutChineseText
 # 导入人脸识别检测包
 from utils import GeneratorModel
-# 导入眨眼检测类
-from utils.BlinksDetectionThread import BlinksDetectThread
 # 导入信息采集槽函数类
 from utils.InfoDialog import InfoDialog
 # 添加数据库连接操作
@@ -79,8 +77,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.bt_open_camera.clicked.connect(self.open_camera)
         # 设置开始考勤按键的回调函数
         self.ui.bt_start_check.clicked.connect(self.auto_control)
-        # 设置活体检测按键的回调函数
-        self.ui.bt_blinks.clicked.connect(self.blinks_thread)
+
         # 设置“退出系统”按键事件, 按下之后退出主界面
         self.ui.bt_exit.clicked.connect(self.quit_window)
         # 设置信息采集按键连接
@@ -172,20 +169,6 @@ class MainWindow(QtWidgets.QMainWindow):
                     print("[Error] The value of self.switch_bt must be zero or one!")
             else:
                 QMessageBox.information(self, "Tips", "请先打开摄像头！", QMessageBox.Ok)
-
-    def blinks_thread(self):
-        bt_text = self.ui.bt_blinks.text()
-        if self.cap.isOpened():
-            if bt_text == '活体检测':
-                # 初始化眨眼检测线程
-                self.startThread = BlinksDetectThread()
-                self.startThread.start()  # 启动线程
-                self.ui.bt_blinks.setText('停止检测')
-            else:
-                self.ui.bt_blinks.setText('活体检测')
-                # self.startThread.terminate()  # 停止线程
-        else:
-            QMessageBox.information(self, "Tips", "请先打开摄像头！", QMessageBox.Ok)
 
     def show_camera(self):
         # 如果按键按下

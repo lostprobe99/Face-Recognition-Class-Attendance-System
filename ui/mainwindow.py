@@ -36,11 +36,8 @@ class Ui_MainWindow(object):
         self.textBrowser_log = QtWidgets.QTextBrowser(self.centralwidget)
         self.textBrowser_log.setGeometry(QtCore.QRect(350, 690, 301, 161))
         self.textBrowser_log.setObjectName("textBrowser_log")
-        self.bt_blinks = QtWidgets.QPushButton(self.centralwidget)
-        self.bt_blinks.setGeometry(QtCore.QRect(770, 770, 71, 81))
-        self.bt_blinks.setObjectName("bt_blinks")
         self.bt_start_check = QtWidgets.QPushButton(self.centralwidget)
-        self.bt_start_check.setGeometry(QtCore.QRect(660, 770, 101, 81))
+        self.bt_start_check.setGeometry(QtCore.QRect(660, 770, 181, 81))
         self.bt_start_check.setObjectName("bt_start_check")
         self.bt_generator = QtWidgets.QPushButton(self.centralwidget)
         self.bt_generator.setGeometry(QtCore.QRect(180, 760, 151, 61))
@@ -135,7 +132,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.bt_blinks.setText(_translate("MainWindow", "活体检测"))
         self.bt_start_check.setText(_translate("MainWindow", "开始考勤"))
         self.bt_generator.setText(_translate("MainWindow", "训练模型"))
         self.bt_view.setText(_translate("MainWindow", "查看结果"))

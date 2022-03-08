@@ -73,25 +73,12 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="bt_blinks">
-    <property name="geometry">
-     <rect>
-      <x>770</x>
-      <y>770</y>
-      <width>71</width>
-      <height>81</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>活体检测</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="bt_start_check">
     <property name="geometry">
      <rect>
       <x>660</x>
       <y>770</y>
-      <width>101</width>
+      <width>181</width>
       <height>81</height>
      </rect>
     </property>
