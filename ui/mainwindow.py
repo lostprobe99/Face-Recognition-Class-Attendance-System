@@ -89,7 +89,7 @@ class Ui_MainWindow(object):
         self.bt_check.setGeometry(QtCore.QRect(980, 140, 91, 71))
         self.bt_check.setObjectName("bt_check")
         self.label_location_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_location_2.setGeometry(QtCore.QRect(859, 250, 81, 16))
+        self.label_location_2.setGeometry(QtCore.QRect(850, 250, 81, 16))
         self.label_location_2.setObjectName("label_location_2")
         self.bt_exit = QtWidgets.QPushButton(self.centralwidget)
         self.bt_exit.setGeometry(QtCore.QRect(860, 790, 211, 61))

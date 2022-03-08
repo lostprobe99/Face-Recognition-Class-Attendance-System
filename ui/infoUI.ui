@@ -89,6 +89,9 @@
                <property name="text">
                 <string> 自动采集</string>
                </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item>
@@ -115,6 +118,9 @@
                  <width>70</width>
                  <height>16777215</height>
                 </size>
+               </property>
+               <property name="value">
+                <number>12</number>
                </property>
               </widget>
              </item>
@@ -245,28 +251,6 @@
     </layout>
    </item>
   </layout>
-  <zorder>label_name</zorder>
-  <zorder>label_class</zorder>
-  <zorder>label_id</zorder>
-  <zorder>bt_start_collect</zorder>
-  <zorder>label_title</zorder>
-  <zorder>bt_check_info</zorder>
-  <zorder>label_sex</zorder>
-  <zorder>label_birth</zorder>
-  <zorder>bt_change_info</zorder>
-  <zorder>label_capture</zorder>
-  <zorder>bt_take_photo</zorder>
-  <zorder>lineEdit_id</zorder>
-  <zorder>lineEdit_name</zorder>
-  <zorder>lineEdit_class</zorder>
-  <zorder>lineEdit_sex</zorder>
-  <zorder>lineEdit_birth</zorder>
-  <zorder>tableView</zorder>
-  <zorder>lcdNumber_collection_nums</zorder>
-  <zorder>label_collected</zorder>
-  <zorder>spinBox_set_num</zorder>
-  <zorder>checkBox_auto_collect</zorder>
-  <zorder>bt_check_dirs_faces</zorder>
  </widget>
  <tabstops>
   <tabstop>bt_start_collect</tabstop>
