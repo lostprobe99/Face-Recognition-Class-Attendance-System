@@ -7,28 +7,17 @@ from copy import deepcopy
 import cv2
 import imutils
 import numpy as np
-# 导入数据库操作包
-import pymysql
 # 导入界面处理包
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer, QDateTime, QCoreApplication, QThread
+from PyQt5.QtCore import QTimer, QDateTime, QCoreApplication
 from PyQt5.QtGui import QImage, QIcon, QPixmap
-from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox, QInputDialog
-# 导入频帧画面大小调整包
-from imutils import face_utils
-from imutils.video import VideoStream
-# 导入眨眼检测必要的包
-from scipy.spatial import distance as dist
+from PyQt5.QtWidgets import QApplication, QMessageBox
 
 # 导入UI主界面
-# from ui import MainUI
-# 使用mainwindow类重构
 from ui import mainwindow as MainWindowUI
-# import ui.mainwindow as MainWindowUI
 
 # 导入打印中文脚本
 from utils import PutChineseText
-# import utils.PutChineseText
 # 导入人脸识别检测包
 from utils import GeneratorModel
 # 导入眨眼检测类
@@ -38,13 +27,7 @@ from utils.InfoDialog import InfoDialog
 # 添加数据库连接操作
 from utils.GlobalVar import connect_to_sql
 
-# 导入考勤状态判断相关函数
 from utils.GlobalVar import FR_LOOP_NUM, statical_facedata_nums
-
-# # 为方便调试，修改后导入模块，重新导入全局变量模块
-# import importlib
-# importlib.reload(GeneratorModel)
-
 import sys
 import os
 
@@ -67,8 +50,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # ####################### 相对路径 ######################
         # 初始化label显示的(黑色)背景
         self.bkg_pixmap = QPixmap('./logo_imgs/bkg1.png')
-        # 设置主窗口的logo
-        self.logo = QIcon('./logo_imgs/fcb_logo.jpg')
         # 设置提示框icon
         self.info_icon = QIcon('./logo_imgs/info_icon.jpg')
         # OpenCV深度学习人脸检测器的路径
@@ -81,9 +62,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.le_path = "./saved_weights/le.pickle"
 
         # ###################### 窗口初始化 ######################
-        # 设置窗口名称和图标
+        # 设置窗口名称
         self.setWindowTitle('人脸识别考勤系统 v2.0')
-        self.setWindowIcon(self.logo)
         # 设置单张图片背景
         self.ui.label_camera.setPixmap(self.bkg_pixmap)
         # label_time显示系统时间
@@ -92,15 +72,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # 启动时间任务
         self.timer.start()
 
-        # ###################### 摄像头初始化 ######################
-        # 初始化摄像头，默认调用第一个摄像头
-        self.url = 0
-        # 如果要调用摄像头1，则设置为1，适用于：笔记本外接USB摄像头
-        # self.url = 1
         self.cap = cv2.VideoCapture()
-        # self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 500)
-        # self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 400)
-        # self.cap.set(cv2.CAP_PROP_FPS, 20)
 
         # ###################### 按键的槽函数 ######################
         # 设置摄像头按键连接函数
@@ -171,7 +143,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if not self.cap.isOpened():
             self.ui.label_logo.clear()
             # 默认打开Windows系统笔记本自带的摄像头，如果是外接USB，可将0改成1
-            self.cap.open(self.url)
+            self.cap.open(CAMERA_ID)
             self.show_camera()
         else:
             self.cap.release()
@@ -526,7 +498,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # 并集，本地与数据库中所有的 ID
         union_set = set(self.student_ids).union(set(self.keys))
         # 交集，本地与数据库中都有的 ID
-        inter_set = set(self.student_ids).intersection(set(self.keys))
+        # inter_set = set(self.student_ids).intersection(set(self.keys))
         # 差集，数据库中有本地没有的 ID
         two_diff_set = set(self.student_ids).difference(set(self.keys))
         # 本地与数据库不同的ID
@@ -536,13 +508,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if len(union_set) == 0:
             QMessageBox.critical(self, "Error", "本地人脸库名称与数据库均未录入信息", QMessageBox.Ok)
-        elif len(inter_set) == 0 and len(union_set) != 0:
-            QMessageBox.critical(self, "Error", "本地人脸库名称与数据库完全不一致", QMessageBox.Ok)
         elif len(local_diff_set) != 0:
-            QMessageBox.warning(self, "Warning", "数据库中以下ID的人脸信息还未采集", QMessageBox.Ok)
+            QMessageBox.warning(self, "Warning", "本地人脸以下ID的信息还未录入数据库", QMessageBox.Ok)
             self.ui.textBrowser_log.append('[Warning] local_diff_set: {}'.format(", ".join(str(i) for i in local_diff_set)))
         elif len(db_diff_set) != 0:
-            QMessageBox.warning(self, "Warning", "本地人脸以下ID的信息还未录入数据库", QMessageBox.Ok)
+            QMessageBox.warning(self, "Warning", "数据库中以下ID的人脸信息还未采集", QMessageBox.Ok)
             self.ui.textBrowser_log.append("[Info] 未录入人员ID：{}".format(", ".join(str(i) for i in db_diff_set)))
         elif len(two_diff_set) == 0 and len(union_set) != 0:
             QMessageBox.information(self, "Success", "核验完成，未发现问题！", QMessageBox.Ok)
@@ -591,7 +561,7 @@ class MainWindow(QtWidgets.QMainWindow):
             cursor.close()
             db.close()
 
-        # 集合运算，算出未到的和迟到的
+        # 集合运算，算出未到和已到
         self.record_name = [int(x) for x in self.record_name]
         self.absence_nums = list(set(self.students_id) - set(self.record_name))
         self.absence_nums.sort()
