@@ -5,7 +5,6 @@ from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox, QInputDialog
 # 导入信息采集框界面
 from ui import infoUI as InfoUI
 
-import threading
 import cv2
 import imutils
 import os
@@ -33,9 +32,8 @@ class InfoDialog(QWidget):
         self.current_filename = os.path.basename(__file__)
 
         try:
-            # 设置窗口名称和图标
+            # 设置窗口名称
             self.setWindowTitle('个人信息采集')
-            self.setWindowIcon(QIcon(f'{rootdir}/logo_imgs/fcb_logo.jpg'))
             # 设置单张图片背景
             pixmap = QPixmap(f'{rootdir}/logo_imgs/bkg2.png')
             self.Dialog.label_capture.setPixmap(pixmap)

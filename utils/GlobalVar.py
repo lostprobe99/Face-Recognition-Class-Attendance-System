@@ -8,7 +8,7 @@ import pymysql
 # CAMERA_ID = 1
 CAMERA_ID = 0
 # 默认采集人脸数量
-COLLENCT_FACE_NUM_DEFAULT = 100
+COLLENCT_FACE_NUM_DEFAULT = 12
 
 # 多少次循环保存一帧图像
 LOOP_FRAME = 20

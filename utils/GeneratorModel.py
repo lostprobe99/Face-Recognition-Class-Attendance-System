@@ -53,7 +53,7 @@ def Generator():
 
     for (i, imagePath) in enumerate(image_paths):
         # 从图像路径中提取人名
-        print("[INFO] processing image {}/{}".format(i + 1, len(image_paths)))
+        print("[INFO] processing image {}/{}".format(i + 1, len(image_paths)), end="\r")
         name = imagePath.split(os.path.sep)[-2]
 
         # 加载图像，将其大小调整为宽度为600像素（同时保持纵横比），然后抓取图像尺寸
@@ -101,6 +101,7 @@ def Generator():
                 known_embeddings.append(vec.flatten())
                 total += 1
 
+    print()
     # 将面部嵌入+名称 保存到磁盘
     print("[INFO] serializing {} encodings...".format(total))
     data = {"embeddings": known_embeddings, "names": known_names}
