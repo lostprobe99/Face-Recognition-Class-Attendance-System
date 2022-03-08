@@ -463,22 +463,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 sql = "SELECT COUNT(*) FROM (SELECT * FROM students WHERE Class = '{}') AS a".format(input_class)
                 cursor.execute(sql)
                 results = cursor.fetchall()[0][0]
-
-                # 实到 取 record_name 的长度
-
-
-                # 设定考勤时间
-                # self.check_time_set = self.format_check_time_set()
-
-                # if self.check_time_set != '':
-                #     QMessageBox.information(self, "Tips", "您设定的考勤时间为{}".format(self.check_time_set), QMessageBox.Ok)
-
-                #     have_checked_id = self.process_check_log(results2)
-                #     self.nums2 = len(np.unique(have_checked_id))
-
-                # else:
-                #     QMessageBox.warning(self, "Warning", "请先设定考勤时间(例 08:00)！", QMessageBox.Ok)
-
             finally:
                 # lcd控件显示人数
                 self.ui.lcd_1.display(results)
@@ -497,42 +481,14 @@ class MainWindow(QtWidgets.QMainWindow):
         # 获取完整的时间格式
         now = datetime.now()
         # 分别获取当前的年，月，日，时，分，秒，均为int类型
-        judg_time = now
-        now_y = judg_time.year
-        now_m = judg_time.month
-        now_d = judg_time.day
 
-        original_hour = str(self.ui.spinBox_time_hour.text())
-        original_minute = str(self.ui.spinBox_time_minute.text())
-        condition_hour = int(self.ui.spinBox_time_hour.text())
-        condition_minute = int(self.ui.spinBox_time_minute.text())
-
-        if condition_hour < 10 and condition_minute < 10:
-            check_time_set = "0" + original_hour + ":" + "0" + original_minute + ":" + "00"
-        elif condition_hour < 10 and condition_minute >= 10:
-            check_time_set = "0" + original_hour + ":" + original_minute + ":" + "00"
-        elif condition_hour >= 10 and condition_minute < 10:
-            check_time_set = original_hour + ":" + "0" + original_minute + ":" + "00"
-        elif condition_hour >= 10 and condition_minute >= 10:
-            check_time_set = original_hour + ":" + original_minute + ":" + "00"
-        else:
-            check_time_set = "08:00:00"
-
+        hour = int(self.ui.spinBox_time_hour.text())
+        minute = int(self.ui.spinBox_time_minute.text())
+        check_time_set = "{:02d}:{:02d}:{:02d}".format(hour, minute, 0)
         # 格式化考勤时间
-        att_time = datetime.strptime(f'{now_y}-{now_m}-{now_d} {check_time_set}', '%Y-%m-%d %H:%M:%S')
+        att_time = datetime.strptime(f'{now.year}-{now.month}-{now.day} {check_time_set}', '%Y-%m-%d %H:%M:%S')
 
         return att_time
-
-    # 从结果中筛选已经签到的人数
-    def process_check_log(self, results):
-        # 从所有考勤记录中筛选考勤时间之后的记录，并针对id取unique操作
-        have_checked_id = []
-        for item in results:
-            # item[3]为每条考勤记录的考勤时间
-            # 如果打卡时间 - 考勤时间设定 在考勤时间截止前1小时和一节大课之间内 则统计考勤记录
-            if (abs((item[3] - self.check_time_set).seconds) < 60 * 60) or (item[3] - self.check_time_set).seconds > 0:
-                have_checked_id.append(int(item[1]))
-        return have_checked_id
 
     # 核验本地人脸与数据库信息是否一致
     def check_variation_db(self):
@@ -550,12 +506,9 @@ class MainWindow(QtWidgets.QMainWindow):
             for item in results:
                 self.student_ids.append(item[0])
                 self.student_names.append(item[1])
-            # 初始化点名列表
-            # self.random_check_names = deepcopy(self.student_names)
-            # self.random_check_ids = deepcopy(self.student_ids)
             # print('[INFO] 当前班级内的成员包括：', self.student_ids, self.student_names)
             self.ui.textBrowser_log.append('[INFO] 当前班级内的成员包括：{}'.format(", ".join(self.student_names)))
-            # 统计本地人脸数据信息
+            # 统计本地人脸数据信息，返回 [ID, num]
             num_dict = statical_facedata_nums()
             # ID
             self.keys = []
@@ -570,11 +523,11 @@ class MainWindow(QtWidgets.QMainWindow):
             db.close()
 
     def check_variation_set_operate(self):
-        # 并集
+        # 并集，本地与数据库中所有的 ID
         union_set = set(self.student_ids).union(set(self.keys))
-        # 交集
+        # 交集，本地与数据库中都有的 ID
         inter_set = set(self.student_ids).intersection(set(self.keys))
-        # 差集
+        # 差集，数据库中有本地没有的 ID
         two_diff_set = set(self.student_ids).difference(set(self.keys))
         # 本地与数据库不同的ID
         local_diff_set = union_set - set(self.student_ids)
@@ -585,15 +538,14 @@ class MainWindow(QtWidgets.QMainWindow):
             QMessageBox.critical(self, "Error", "本地人脸库名称与数据库均未录入信息", QMessageBox.Ok)
         elif len(inter_set) == 0 and len(union_set) != 0:
             QMessageBox.critical(self, "Error", "本地人脸库名称与数据库完全不一致", QMessageBox.Ok)
-        elif len(two_diff_set) == 0 and len(union_set) != 0:
-            QMessageBox.information(self, "Success", "核验完成，未发现问题！", QMessageBox.Ok)
-
         elif len(local_diff_set) != 0:
             QMessageBox.warning(self, "Warning", "数据库中以下ID的人脸信息还未采集", QMessageBox.Ok)
-            self.ui.textBrowser_log.append('[Warning] local_diff_set: {}'.format(", ".join(local_diff_set)))
+            self.ui.textBrowser_log.append('[Warning] local_diff_set: {}'.format(", ".join(str(i) for i in local_diff_set)))
         elif len(db_diff_set) != 0:
             QMessageBox.warning(self, "Warning", "本地人脸以下ID的信息还未录入数据库", QMessageBox.Ok)
             self.ui.textBrowser_log.append("[Info] 未录入人员ID：{}".format(", ".join(str(i) for i in db_diff_set)))
+        elif len(two_diff_set) == 0 and len(union_set) != 0:
+            QMessageBox.information(self, "Success", "核验完成，未发现问题！", QMessageBox.Ok)
 
     # 使用ID当索引找到其它信息
     def use_id_get_info(self, ID):

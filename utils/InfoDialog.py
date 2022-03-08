@@ -49,7 +49,7 @@ class InfoDialog(QWidget):
         # 设置查询信息按键连接函数
         self.Dialog.bt_check_info.clicked.connect(self.check_info)
         # 设置写入信息按键连接函数
-        self.Dialog.bt_change_info.clicked.connect(self.change_info)
+        self.Dialog.bt_change_info.clicked.connect(self.write_db)
         # 查看人脸图片数量案件连接函数
         self.Dialog.bt_check_dirs_faces.clicked.connect(self.check_dir_faces_num)
 
@@ -97,7 +97,7 @@ class InfoDialog(QWidget):
     def show_capture(self):
         self.Dialog.bt_start_collect.setText(u'停止采集')
         self.Dialog.label_capture.clear()
-        print("[INFO] starting video stream...")
+        # print("[INFO] starting video stream...")
         loop_num = 0
 
         # 循环来自视频文件流的帧
@@ -149,29 +149,15 @@ class InfoDialog(QWidget):
         # 因为最后一张画面会显示在GUI中，此处实现清除。
         self.Dialog.label_capture.clear()
 
+        # 采集结束时，如果已填入学生信息，则信息入库
         _id = self.Dialog.lineEdit_id.text()
         _name = self.Dialog.lineEdit_name.text()
         _class = self.Dialog.lineEdit_class.text()
         _gender = self.Dialog.lineEdit_sex.text()
         _bthd = self.Dialog.lineEdit_birth.text()
         if all((_id, _name, _class, _gender, _bthd)):
-            # 信息入库
-            try:
-                db, cursor = connect_to_sql()
-            except ConnectionError as e:
-                print("[Error] 数据库连接失败！")
+            self.write_db()
 
-            try:
-                _sql = "INSERT INTO students(ID, Name, Class, Sex, Birthday) VALUES ('{}', '{}', '{}', '{}', '{}')"
-                cursor.execute(_sql.format(_id, _name, _class, _gender, _bthd))
-            except ConnectionAbortedError as e:
-                self.ui.textBrowser_log.append("[INFO] SQL execute failed!")
-            else:
-                QMessageBox.information(self, "Tips", "信息已入库")
-            finally:
-                db.commit()
-                cursor.close()
-                db.close()
 
     def save_image(self):
         self.filename = '{}/face_dataset/{}/'.format(rootdir, self.dialog_text_id)
@@ -235,16 +221,16 @@ class InfoDialog(QWidget):
                     cursor.execute(sql)
                     # 获取所有记录列表
                     results = cursor.fetchall()
+                except ValueError as e:
+                    print("[ERROR] 无法通过当前语句查询！", e)
+                    
+                else:
                     for i in results:
                         lists.append(i[0])
                         lists.append(i[1])
                         lists.append(i[2])
                         lists.append(i[3])
                         lists.append(i[4])
-                except ValueError as e:
-                    print("[ERROR] 无法通过当前语句查询！", e)
-                    
-                else:
                     # 设置显示数据层次结构，5行2列(包含行表头)
                     table_view_module = QtGui.QStandardItemModel(5, 1)
                     # 设置数据行、列标题
@@ -253,10 +239,10 @@ class InfoDialog(QWidget):
                     # table_view_module.setVerticalHeaderLabels(['学号', '姓名', '班级', '性别', '生日'])
 
                     # 设置填入数据内容
-                    lists[0] = self.input_id
                     if len(lists) == 0:
-                        QMessageBox.warning(self, "warning", "人脸数据库中无此人信息，请马上录入！", QMessageBox.Ok)
+                        QMessageBox.warning(self, "warning", "查无此人", QMessageBox.Ok)
                     else:
+                        lists[0] = self.input_id
                         for row, content in enumerate(lists):
                             row_name = QtGui.QStandardItem(rows_name[row])
                             item = QtGui.QStandardItem(content)
@@ -281,7 +267,7 @@ class InfoDialog(QWidget):
         # print(values)
         # 如果没有人脸文件夹，则提示用户采集数据
         if len(keys) == 0:
-            QMessageBox.warning(self, "Error", "face_dataset文件夹下没有人脸数据，请马上录入！", QMessageBox.Ok)
+            QMessageBox.warning(self, "Error", "face_dataset文件夹下没有人脸数据", QMessageBox.Ok)
         else:
             # 设置显示数据层次结构，5行2列(包含行表头)
             table_view_module = QtGui.QStandardItemModel(len(keys), 1)
@@ -300,7 +286,7 @@ class InfoDialog(QWidget):
             self.Dialog.tableView.setModel(table_view_module)
 
     # 将采集信息写入数据库
-    def write_info(self):
+    def collect_info(self):
         # 存放信息的列表
         users = []
         # 信息是否完整标志位
@@ -318,17 +304,17 @@ class InfoDialog(QWidget):
         return is_info_full, users
 
     # 添加修改信息
-    def change_info(self):
+    def write_db(self):
         # 写入数据库
         try:
             db, cursor = connect_to_sql()
             # 如果存在数据，先删除再写入。前提是设置唯一索引字段或者主键。
             insert_sql = "replace into students(ID, Name, Class, Sex, Birthday) values(%s, %s, %s, %s, %s)"
 
-            flag, users = self.write_info()
+            flag, users = self.collect_info()
             if flag:
                 cursor.executemany(insert_sql, users)
-                QMessageBox.warning(self, "Warning", "修改成功，请勿重复操作！", QMessageBox.Ok)
+                QMessageBox.warning(self, "Warning", "修改成功", QMessageBox.Ok)
             else:
                 QMessageBox.information(self, "Error", "修改失败！请保证每个属性不为空！", QMessageBox.Ok)
         # 捕获所有除系统退出以外的所有异常
